@@ -27,6 +27,9 @@ function setGame() {
             _snake.direction(10, 0);
         }
         _snake.update();
+        /*
+        * TODO pass direction to show() and adjust the tail and snout
+         */
         _snake.show();
     });
 
