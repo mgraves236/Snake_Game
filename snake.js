@@ -1,6 +1,6 @@
 class Snake {
     constructor() {
-        this.x = 50;
+        this.x = 70;
         this.y = 100;
         this.xSpeed = 0;
         this.ySpeed = 0;
@@ -11,11 +11,19 @@ class Snake {
         }
 
         this.update = function () {
+            console.log(this.y);
+            let x = this.x + this.xSpeed;
+            let y = this.y + this.ySpeed;
+            if (x > 690 || x < 70
+                || y > 730 || y < 30) {
+
+            } else {
+                this.x = this.x + this.xSpeed;
+                this.y = this.y + this.ySpeed;
+            }
             _stage.save();
             _stage.clearRect(0,0, _canvas.width, _canvas.height);
             _stage.restore();
-            this.x = this.x + this.xSpeed;
-            this.y = this.y + this.ySpeed;
         }
 
         this.show = function () {
