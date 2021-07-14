@@ -1,39 +1,69 @@
-var _canvas;
-var _stage;
-var _snake;
+let _canvas;
+let _ctx;
+let _snake;
+let _food;
 
-function setCanvas() {
+setUp();
+
+window.requestAnimationFrame(mainGame);
+
+function setUp() {
     _canvas = document.getElementById("canvas");
-    _stage = _canvas.getContext("2d");
+    _ctx = _canvas.getContext("2d");
     _canvas.width = 800;
     _canvas.height = 800;
-
-    setGame();
-}
-
-
-function setGame() {
+    drawBoard();
+    _food = new Food();
+    _food.randomPos();
     _snake = new Snake();
     _snake.show();
+}
+
+function drawBoard() {
+    _ctx.fillStyle = "rgba(255,20,147,0.45)";
+    for (let j = 0; j < 40; j++) {
+        for (let i = 0; i < 40; i++) {
+            if (j%2 === 0) {
+                _ctx.fillRect(80 * i, 40 * j, 40, 40);
+            } else {
+                _ctx.fillRect(40 + 80 * i, 40 * j, 40, 40);
+            }
+        }
+    }
+}
+
+const snakeSpeed = 5;
+let lastRenderTime = 0;
+let gameOver = false;
+let lastFood = 0;
+function mainGame(currentTime) {
+
+   window.requestAnimationFrame(mainGame);
+   const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
+    if (secondsSinceLastRender < 1 / snakeSpeed) return;
+    const secondsSinceLastFood = (currentTime - lastFood) / 1000;
+    if (secondsSinceLastFood > 5) {
+        _food.randomPos();
+        console.log(_food.x + " " + _food.y);
+        lastFood = currentTime;
+    }
+
+   lastRenderTime = currentTime;
 
     window.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowUp') {
-            _snake.direction(0, -10);
-        } else if (e.key === 'ArrowDown'){
-            _snake.direction(0, 10);
+            _snake.direction(0, -1);
+        } else if (e.key === 'ArrowDown') {
+            _snake.direction(0, 1);
         } else if (e.key === 'ArrowLeft') {
-            _snake.direction(-10, 0);
+            _snake.direction(-1, 0);
         } else if (e.key === 'ArrowRight') {
-            _snake.direction(10, 0);
+            _snake.direction(1, 0);
         }
-        _snake.update();
-        /*
-        * TODO pass direction to show() and adjust the tail and snout
-         */
-        _snake.show();
     });
+    _snake.update();
+    _snake.show();
 
 }
 
-setCanvas();
 
