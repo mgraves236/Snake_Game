@@ -32,7 +32,7 @@ function drawBoard() {
     }
 }
 
-const snakeSpeed = 5;
+const snakeSpeed = 3;
 let lastRenderTime = 0;
 let gameOver = false;
 
@@ -54,6 +54,7 @@ function mainGame(currentTime) {
             _snake.direction(1, 0);
         }
     });
+    console.log(_snake.length);
     _snake.eat();
     _snake.update();
     _snake.show();
