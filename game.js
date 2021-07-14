@@ -41,12 +41,6 @@ function mainGame(currentTime) {
    window.requestAnimationFrame(mainGame);
    const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
     if (secondsSinceLastRender < 1 / snakeSpeed) return;
-    const secondsSinceLastFood = (currentTime - lastFood) / 1000;
-    if (secondsSinceLastFood > 5) {
-        _food.randomPos();
-        console.log(_food.x + " " + _food.y);
-        lastFood = currentTime;
-    }
 
    lastRenderTime = currentTime;
 
