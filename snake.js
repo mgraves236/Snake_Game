@@ -7,16 +7,25 @@ class Snake {
             80,
             80
         ];
-        /*this.x = 40;
-        this.y = 80;*/
         this.xSpeed = 1;
         this.ySpeed = 0;
-        this.direction = function (x, y) {
+    }
+
+        direction(x, y) {
             this.xSpeed = x;
             this.ySpeed = y;
         }
 
-        this.update = function () {
+      eat() {
+        console.log(this.body[0][0] + "  " + _food.x);
+          if (this.body[0][0] === _food.x
+              && this.body[0][1] === _food.y) {
+              _food.randomPos();
+          }
+      }
+
+
+        update() {
             let x = this.body[0][0] + this.xSpeed * _scl;
             let y = this.body[0][1] + this.ySpeed * _scl;
             if (x > 750 || x < 40
@@ -30,7 +39,7 @@ class Snake {
             }
         }
 
-        this.show = function () {
+        show() {
             _ctx.save();
             _ctx.clearRect(0, 0, _canvas.width, _canvas.height);
             drawBoard();
@@ -126,5 +135,4 @@ class Snake {
 
             }
         }
-    }
 }

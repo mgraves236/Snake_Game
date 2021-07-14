@@ -35,13 +35,12 @@ function drawBoard() {
 const snakeSpeed = 5;
 let lastRenderTime = 0;
 let gameOver = false;
-let lastFood = 0;
+
 function mainGame(currentTime) {
 
    window.requestAnimationFrame(mainGame);
    const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
     if (secondsSinceLastRender < 1 / snakeSpeed) return;
-
    lastRenderTime = currentTime;
 
     window.addEventListener('keydown', function (e) {
@@ -55,6 +54,7 @@ function mainGame(currentTime) {
             _snake.direction(1, 0);
         }
     });
+    _snake.eat();
     _snake.update();
     _snake.show();
 
