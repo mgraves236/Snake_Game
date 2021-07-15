@@ -11,32 +11,40 @@ class Snake {
 
     direction(x, y) {
         this.xSpeed = x;
-        this.ySpeed = y;
+        this.ySpeed = y
     }
 
     eat() {
-        if (this.body[0].x === _food.x && this.body[0].y - _scl === _food.y) {
+        let head = new Point(this.body[this.length - 1].x, this.body[this.length - 1].y);
+        if (head.x === _food.x && head.y === _food.y) {
             _food.randomPos();
             this.grow();
         }
     }
 
     grow() {
+        let head = new Point(this.body[this.length - 1].x, this.body[this.length - 1].y);
         this.length++;
-        this.body.push(new Point(0,40 * this.length));
+        // this.body.push(new  Point(40 * this.length + this.body[0].x,40 * this.length));
+        this.body.push(head);
     }
 
     update() {
-        let x = this.body[0].x + this.xSpeed * _scl;
-        let y = this.body[0].y + this.ySpeed * _scl;
+        //  let head = this.body[this.length - 1];
+        let head = new Point(this.body[this.length - 1].x, this.body[this.length - 1].y);
+        let x = head.x + this.xSpeed * _scl;
+        let y = head.y + this.ySpeed * _scl;
         if (x > 750 || x < 40
             || y > 790 || y < 0) {
 
             /* TODO game over */
 
         } else {
-            this.body[0].x = x;
-            this.body[0].y = y;
+            this.body.shift();
+            head.x = x;
+            head.y = y;
+            this.body.push(head);
+
         }
     }
 
@@ -46,98 +54,110 @@ class Snake {
         drawBoard();
         _food.getFood();
         _ctx.restore();
+        _ctx.fillStyle = "#880015";
+        for (let i = 0; i < this.length; i++) {
+            _ctx.fillRect(this.body[i].x, this.body[i].y, 40, 40);
+        }
+        // tail drawing
+        if ((this.length > 1 && this.body[0].x === this.body[1].x) && this.body[0].y > this.body[1].y) {
+            _ctx.fillRect(this.body[0].x + 15, this.body[0].y + 40, 10, 40);
+        } else if ((this.length > 1 && this.body[0].x === this.body[1].x) && this.body[0].y < this.body[1].y) {
+            _ctx.fillRect(this.body[0].x + 15, this.body[0].y - 40, 10, 40);
+        } else if ((this.length > 1 && this.body[0].y === this.body[1].y) && this.body[0].x < this.body[1].x) {
+            _ctx.fillRect(this.body[0].x - 40, this.body[0].y + 15, 40, 10);
+        } else if (this.length > 1) {
+            _ctx.fillRect(this.body[0].x + 40, this.body[0].y + 15, 40, 10);
+        }
+
         if (this.xSpeed > 0) {
 
             /* head */
-            _ctx.fillStyle = "#880015";
-            _ctx.fillRect(this.body[0].x + 40, this.body[0].y - 40, 40, 40);
-            _ctx.fillRect(this.body[0].x + 40, this.body[0].y - 50, 20, 10);
-            _ctx.fillRect(this.body[0].x + 40, this.body[0].y, 20, 10);
+            _ctx.fillRect(this.body[this.length - 1].x, this.body[this.length - 1].y, 40, 40);
+            _ctx.fillRect(this.body[this.length - 1].x, this.body[this.length - 1].y - 10, 20, 10);
+            _ctx.fillRect(this.body[this.length - 1].x, this.body[this.length - 1].y + 40, 20, 10);
             _ctx.save();
             _ctx.fillStyle = "#000";
-            _ctx.fillRect(this.body[0].x + 100, this.body[0].y - 25, 10, 10);
-            _ctx.fillRect(this.body[0].x + 65, this.body[0].y - 15, 10, 10);
-            _ctx.fillRect(this.body[0].x + 65, this.body[0].y - 36, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 60, this.body[this.length - 1].y + 15, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 25, this.body[this.length - 1].y + 25, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 25, this.body[this.length - 1].y + 4, 10, 10);
             _ctx.fillStyle = "#f4d39d";
-            _ctx.fillRect(this.body[0].x + 80, this.body[0].y - 32, 20, 25);
+            _ctx.fillRect(this.body[this.length - 1].x + 40, this.body[this.length - 1].y + 8, 20, 25);
             _ctx.fillStyle = "#ffffff";
-            _ctx.fillRect(this.body[0].x + 65, this.body[0].y - 10, 7, 5);
-            _ctx.fillRect(this.body[0].x + 65, this.body[0].y - 37, 7, 5);
-            /* body */
+            _ctx.fillRect(this.body[this.length - 1].x + 25, this.body[this.length - 1].y + 30, 7, 5);
+            _ctx.fillRect(this.body[this.length - 1].x + 25, this.body[this.length - 1].y + 3, 7, 5);
             _ctx.restore();
-            for (let i = 0; i < this.length; i++) {
-                _ctx.fillRect(this.body[i].x, this.body[i].y - 40, 40, 40);
+            if (this.length === 1) {
+                _ctx.fillRect(this.body[0].x - 40, this.body[0].y + 15, 40, 10);
             }
-            /* tail */
-            /* TODO multiply the tail by the length*/
-            //_ctx.fillRect(this.body[0].x, this.body[0].y - 40, 40, 40);
-            _ctx.fillRect(this.body[0].x - 40, this.body[0].y - 25, 40, 10);
 
         } else if (this.xSpeed < 0) {
 
             /* head */
             _ctx.fillStyle = "#880015";
-            _ctx.fillRect(this.body[0].x - 40, this.body[0].y - 40, 40, 40);
-            _ctx.fillRect(this.body[0].x - 20, this.body[0].y - 50, 20, 10);
-            _ctx.fillRect(this.body[0].x - 20, this.body[0].y, 20, 10);
+            _ctx.fillRect(this.body[this.length - 1].x, this.body[this.length - 1].y, 40, 40);
+            _ctx.fillRect(this.body[this.length - 1].x + 20, this.body[this.length - 1].y - 10, 20, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 20, this.body[this.length - 1].y + 40, 20, 10);
             _ctx.save();
             _ctx.fillStyle = "#000";
-            _ctx.fillRect(this.body[0].x - 70, this.body[0].y - 25, 10, 10);
-            _ctx.fillRect(this.body[0].x - 35, this.body[0].y - 15, 10, 10);
-            _ctx.fillRect(this.body[0].x - 35, this.body[0].y - 36, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x - 30, this.body[this.length - 1].y + 15, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 5, this.body[this.length - 1].y + 25, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 5, this.body[this.length - 1].y + 4, 10, 10);
             _ctx.fillStyle = "#f4d39d";
-            _ctx.fillRect(this.body[0].x - 60, this.body[0].y - 32, 20, 25);
+            _ctx.fillRect(this.body[this.length - 1].x - 20, this.body[this.length - 1].y + 8, 20, 25);
             _ctx.fillStyle = "#ffffff";
-            _ctx.fillRect(this.body[0].x - 35, this.body[0].y - 10, 7, 5);
-            _ctx.fillRect(this.body[0].x - 35, this.body[0].y - 37, 7, 5);
+            _ctx.fillRect(this.body[this.length - 1].x + 5, this.body[this.length - 1].y + 30, 7, 5);
+            _ctx.fillRect(this.body[this.length - 1].x + 5, this.body[this.length - 1].y + 3, 7, 5);
             /* tail */
             _ctx.restore();
-            _ctx.fillRect(this.body[0].x, this.body[0].y - 40, 40, 40);
-            _ctx.fillRect(this.body[0].x + 40, this.body[0].y - 25, 40, 10);
+            if (this.length === 1) {
+                _ctx.fillRect(this.body[0].x + 40 * this.length, this.body[0].y + 15, 40, 10);
+            }
 
         } else if (this.ySpeed < 0) {
 
             /* head */
             _ctx.fillStyle = "#880015";
-            _ctx.fillRect(this.body[0].x, this.body[0].y, 40, 40);
-            _ctx.fillRect(this.body[0].x - 10, this.body[0].y + 20, 10, 20);
-            _ctx.fillRect(this.body[0].x + 40, this.body[0].y + 20, 10, 20);
+            _ctx.fillRect(this.body[this.length - 1].x, this.body[this.length - 1].y, 40, 40);
+            _ctx.fillRect(this.body[this.length - 1].x - 10, this.body[this.length - 1].y + 20, 10, 20);
+            _ctx.fillRect(this.body[this.length - 1].x + 40, this.body[this.length - 1].y + 20, 10, 20);
             _ctx.save();
             _ctx.fillStyle = "#000";
-            _ctx.fillRect(this.body[0].x + 15, this.body[0].y - 30, 10, 10);
-            _ctx.fillRect(this.body[0].x + 3, this.body[0].y + 5, 10, 10);
-            _ctx.fillRect(this.body[0].x + 27, this.body[0].y + 5, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 15, this.body[this.length - 1].y - 30, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 3, this.body[this.length - 1].y + 5, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 27, this.body[this.length - 1].y + 5, 10, 10);
             _ctx.fillStyle = "#f4d39d";
-            _ctx.fillRect(this.body[0].x + 7, this.body[0].y - 20, 25, 20);
+            _ctx.fillRect(this.body[this.length - 1].x + 7, this.body[this.length - 1].y - 20, 25, 20);
             _ctx.fillStyle = "#ffffff";
-            _ctx.fillRect(this.body[0].x + 3, this.body[0].y + 5, 5, 7);
-            _ctx.fillRect(this.body[0].x + 31, this.body[0].y + 5, 5, 7);
+            _ctx.fillRect(this.body[this.length - 1].x + 3, this.body[this.length - 1].y + 5, 5, 7);
+            _ctx.fillRect(this.body[this.length - 1].x + 31, this.body[this.length - 1].y + 5, 5, 7);
             /* tail */
             _ctx.restore();
-            _ctx.fillRect(this.body[0].x, this.body[0].y + 40, 40, 40);
-            _ctx.fillRect(this.body[0].x + 15, this.body[0].y + 80, 10, 40);
+            if (this.length === 1) {
+                _ctx.fillRect(this.body[0].x + 15, this.body[0].y + 40 * this.length, 10, 40);
+            }
 
         } else {
 
             /* head */
             _ctx.fillStyle = "#880015";
-            _ctx.fillRect(this.body[0].x, this.body[0].y, 40, 40);
-            _ctx.fillRect(this.body[0].x - 10, this.body[0].y, 10, 20);
-            _ctx.fillRect(this.body[0].x + 40, this.body[0].y, 10, 20);
+            _ctx.fillRect(this.body[this.length - 1].x, this.body[this.length - 1].y, 40, 40);
+            _ctx.fillRect(this.body[this.length - 1].x - 10, this.body[this.length - 1].y, 10, 20);
+            _ctx.fillRect(this.body[this.length - 1].x + 40, this.body[this.length - 1].y, 10, 20);
             _ctx.save();
             _ctx.fillStyle = "#000";
-            _ctx.fillRect(this.body[0].x + 15, this.body[0].y + 60, 10, 10);
-            _ctx.fillRect(this.body[0].x + 3, this.body[0].y + 25, 10, 10);
-            _ctx.fillRect(this.body[0].x + 27, this.body[0].y + 25, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 15, this.body[this.length - 1].y + 60, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 3, this.body[this.length - 1].y + 25, 10, 10);
+            _ctx.fillRect(this.body[this.length - 1].x + 27, this.body[this.length - 1].y + 25, 10, 10);
             _ctx.fillStyle = "#f4d39d";
-            _ctx.fillRect(this.body[0].x + 7, this.body[0].y + 40, 25, 20);
+            _ctx.fillRect(this.body[this.length - 1].x + 7, this.body[this.length - 1].y + 40, 25, 20);
             _ctx.fillStyle = "#ffffff";
-            _ctx.fillRect(this.body[0].x + 3, this.body[0].y + 25, 5, 7);
-            _ctx.fillRect(this.body[0].x + 31, this.body[0].y + 25, 5, 7);
+            _ctx.fillRect(this.body[this.length - 1].x + 3, this.body[this.length - 1].y + 25, 5, 7);
+            _ctx.fillRect(this.body[this.length - 1].x + 31, this.body[this.length - 1].y + 25, 5, 7);
             /* tail */
             _ctx.restore();
-            _ctx.fillRect(this.body[0].x, this.body[0].y - 40, 40, 40);
-            _ctx.fillRect(this.body[0].x + 15, this.body[0].y - 80, 10, 40);
+            if (this.length === 1) {
+                _ctx.fillRect(this.body[0].x + 15, this.body[0].y - 40 * this.length, 10, 40);
+            }
 
         }
     }
