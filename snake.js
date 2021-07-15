@@ -32,7 +32,6 @@ class Snake {
         let head = new Point(this.body[this.length - 1].x, this.body[this.length - 1].y);
         for (let i = 0; i < this.length - 1; i++) {
             if (head.x === this.body[i].x && head.y === this.body[i].y) {
-                alert("Game over")
                 return true;
             }
         }

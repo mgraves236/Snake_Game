@@ -3,9 +3,30 @@ let _ctx;
 let _snake;
 let _food;
 
+let _playButton = {
+    x: 300,
+    y: 360,
+    width: 200,
+    height: 80
+};
+
+function drawButton() {
+    _ctx.fillStyle = "rgb(255,20,147)";
+    _ctx.fillRect(_playButton.x, _playButton.y, _playButton.width, _playButton.height);
+    _ctx.fillStyle = "#ffffff";
+    _ctx.font = "60px Arial";
+    _ctx.fillText("PLAY", _playButton.x + 25, _playButton.y + 60);
+}
+
 setUp();
 
-window.requestAnimationFrame(mainGame);
+function clickBtn(e) {
+    let mousePos = getMousePos(e);
+    console.log(mousePos);
+    if (isInside(mousePos, _playButton)) {
+        startGame();
+    }
+}
 
 function setUp() {
     _canvas = document.getElementById("canvas");
@@ -13,10 +34,17 @@ function setUp() {
     _canvas.width = 800;
     _canvas.height = 800;
     drawBoard();
+   _canvas.addEventListener('click', clickBtn);
+   drawButton();
+}
+
+function startGame() {
+    _canvas.removeEventListener('click', clickBtn);
     _food = new Food();
     _food.randomPos();
     _snake = new Snake();
     _snake.show();
+    window.requestAnimationFrame(mainGame);
 }
 
 function drawBoard() {
@@ -34,7 +62,6 @@ function drawBoard() {
 
 const snakeSpeed = 3;
 let lastRenderTime = 0;
-let gameOver = false;
 
 function mainGame(currentTime) {
 
@@ -55,13 +82,31 @@ function mainGame(currentTime) {
         }
     });
     if (_snake.endGame()) {
-        alert("Game over");
+        _ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+        drawBoard();
+        _canvas.addEventListener('click', clickBtn);
+        drawButton();
+        return;
     }
     _snake.eat();
     _snake.update();
     _snake.show();
+}
 
+function getMousePos(event) {
+    let rect = _canvas.getBoundingClientRect();
+    let scaleX = _canvas.width / rect.width;
+    let scaleY = _canvas.height / rect.height;
 
+    return {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY
+    };
+}
+
+function isInside(pos, button) {
+    return pos.x > button.x && pos.x < button.x + button.width
+        && pos.y < button.y + button.height && pos.y > button.y;
 }
 
 
