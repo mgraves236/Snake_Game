@@ -54,10 +54,13 @@ function mainGame(currentTime) {
             _snake.direction(1, 0);
         }
     });
-    console.log(_snake.length);
+    if (_snake.endGame()) {
+        alert("Game over");
+    }
     _snake.eat();
     _snake.update();
     _snake.show();
+
 
 }
 

@@ -25,27 +25,32 @@ class Snake {
     grow() {
         let head = new Point(this.body[this.length - 1].x, this.body[this.length - 1].y);
         this.length++;
-        // this.body.push(new  Point(40 * this.length + this.body[0].x,40 * this.length));
         this.body.push(head);
     }
 
+    endGame() {
+        let head = new Point(this.body[this.length - 1].x, this.body[this.length - 1].y);
+        for (let i = 0; i < this.length - 1; i++) {
+            if (head.x === this.body[i].x && head.y === this.body[i].y) {
+                alert("Game over")
+                return true;
+            }
+        }
+        if (head.x > 750 || head.x < 40 || head.y > 790 || head.y < 0) {
+            return true;
+        }
+        return false;
+    }
+
     update() {
-        //  let head = this.body[this.length - 1];
         let head = new Point(this.body[this.length - 1].x, this.body[this.length - 1].y);
         let x = head.x + this.xSpeed * _scl;
         let y = head.y + this.ySpeed * _scl;
-        if (x > 750 || x < 40
-            || y > 790 || y < 0) {
 
-            /* TODO game over */
-
-        } else {
-            this.body.shift();
-            head.x = x;
-            head.y = y;
-            this.body.push(head);
-
-        }
+        this.body.shift();
+        head.x = x;
+        head.y = y;
+        this.body.push(head);
     }
 
     show() {
@@ -158,7 +163,6 @@ class Snake {
             if (this.length === 1) {
                 _ctx.fillRect(this.body[0].x + 15, this.body[0].y - 40 * this.length, 10, 40);
             }
-
         }
     }
 }
